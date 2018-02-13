@@ -15,3 +15,10 @@ QR Code Scanning Links
  * https://github.com/eddydn/XamarinQrCodeCamera (probiert, hatte aber auch AutoFocus Probleme - aber umsetzbar)
  * https://github.com/rebuy-de/rb-forms-barcode (nicht getestet, wäre ein Wrapper um Vision API)
 
+(Android) Apps
+-------
+
+ * [EBilly](https://play.google.com/store/apps/details?id=at.weblogic.ebilly) (scheint Validierung durchzuführen)
+ * [BMF Belegcheck](https://play.google.com/store/apps/details?id=at.gv.bmf.belegcheck)
+ * [RKSV Belegscanner](https://play.google.com/store/apps/details?id=com.jona.rksvbelegscanner)
+ * [Belegscanner](https://play.google.com/store/apps/details?id=at.belegscanner.app)
