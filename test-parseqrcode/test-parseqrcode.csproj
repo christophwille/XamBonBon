@@ -12,6 +12,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ben.Demystifier" Version="0.1.0" />
+    <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="2.3.8" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AT.RKSV.Kassenbeleg\AT.RKSV.Kassenbeleg.csproj" />
   </ItemGroup>
 
