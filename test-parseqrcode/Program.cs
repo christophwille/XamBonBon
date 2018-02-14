@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
 using AT.RKSV.Kassenbeleg;
+using NeoSmart.Utils;
 using Novell.Directory.Ldap;
 
 namespace test_parseqrcode
@@ -21,33 +23,36 @@ namespace test_parseqrcode
 
 			// Sample A-Trust lookup for above serial
 			// TODO: get actual cert data (public key)
-			try
-			{
-				using (var conn = new LdapConnection())
-				{
-					conn.Connect("ldap.a-trust.at", 389);
-					conn.Bind(null, null);
+			//try
+			//{
+			//	using (var conn = new LdapConnection())
+			//	{
+			//		conn.Connect("ldap.a-trust.at", 389);
+			//		conn.Bind(null, null);
 
-					var searchBase = "C=AT";
-					var filter = $"(eidCertificateSerialNumber={certificateSerialDecimal})";
-					var search = conn.Search(searchBase, LdapConnection.SCOPE_SUB, filter, null, false);
+			//		var searchBase = "C=AT";
+			//		var filter = $"(eidCertificateSerialNumber={certificateSerialDecimal})";
+			//		var search = conn.Search(searchBase, LdapConnection.SCOPE_SUB, filter, null, false);
 
-					while (search.hasMore())
-					{
-						var nextEntry = search.next();
-						nextEntry.getAttributeSet();
+			//		while (search.hasMore())
+			//		{
+			//			var nextEntry = search.next();
+			//			nextEntry.getAttributeSet();
 
-						var cn = nextEntry.getAttribute("cn").StringValue;
-						Console.WriteLine($"cn = {cn}");
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.Demystify().ToString());
-			}
-			
+			//			var cn = nextEntry.getAttribute("cn").StringValue;
+			//			Console.WriteLine($"cn = {cn}");
+			//		}
+			//	}
+			//}
+			//catch (Exception e)
+			//{
+			//	Console.WriteLine(e.Demystify().ToString());
+			//}
+
 			// TODO: verify signature (ECDSA JWS)
+
+			byte[] signature = Convert.FromBase64String(test.SignatureValue);
+			// qrcode: last index of '_', take left, SHA256 => original hash
 		}
 	}
 }
