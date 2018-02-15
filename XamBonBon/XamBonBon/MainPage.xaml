@@ -5,11 +5,11 @@
 			 x:Class="XamBonBon.MainPage">
 
 	<StackLayout Spacing="10">
-		<Button Text="Click"
+	    <Label FontSize = "30" Text="RKSV PoC" />
+		<Button Text="Beleg Scannen"
 				x:Name="ScanBon"
 				Clicked="ScanBon_Clicked"/>
-		<Entry x:Name="BarCodeScanResult"
-			   Placeholder="Text Do scan"/>
+        <Editor x:Name="VerificationResult" HeightRequest="400" />
 	</StackLayout>
 
 

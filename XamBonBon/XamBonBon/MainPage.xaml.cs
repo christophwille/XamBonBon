@@ -24,19 +24,36 @@ namespace XamBonBon
 				var result = await scanner.ScanAsync();
 				if (result != null)
 				{
-					BarCodeScanResult.Text = result;
-					System.Diagnostics.Debug.WriteLine("Barcode: " + result);
+					System.Diagnostics.Debug.WriteLine("QR: " + result);
 
-					// Minimal test code
+					StringBuilder stb = new StringBuilder();
+					stb.AppendLine($"QR: {result}");
+
 					var qrCode = new ReceiptQrCode(result);
 					if (qrCode.IsValid)
 					{
+						stb.AppendLine($"Cipher Suite: {qrCode.CipherSuite}");
+						stb.AppendLine($"Cert Id: {qrCode.CertificateSerialAsDecimal}");
+						stb.AppendLine($"Datum: {qrCode.Date}");
+						stb.AppendLine($"Beträge: {qrCode.BetragSatzNormal} / {qrCode.BetragSatzErmaessigt1} / {qrCode.BetragSatzErmaessigt2} / {qrCode.BetragSatzNull} / {qrCode.BetragSatzBesonders}");
+
 						var certificateLookupResult = CertificateLookup.ATrust(qrCode.CertificateSerialAsDecimal);
 						if (certificateLookupResult.Found)
 						{
 							bool verified = qrCode.ValidateSignature(certificateLookupResult.CertificateBinary);
+							stb.AppendLine($"Ergebnis Validierung Signatur: {verified}");
+						}
+						else
+						{
+							stb.AppendLine($"Fehler: Zertifikat nicht gefunden, {certificateLookupResult.ErrorMessage}");
 						}
 					}
+					else
+					{
+						stb.AppendLine("Fehler: QR Code ungültig");
+					}
+
+					VerificationResult.Text = stb.ToString();
 				}
 			}
 			catch (Exception ex)

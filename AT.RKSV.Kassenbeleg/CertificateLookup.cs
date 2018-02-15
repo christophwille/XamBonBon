@@ -58,6 +58,7 @@ namespace AT.RKSV.Kassenbeleg
 		{
 			CN = cn;
 			CertificateBinary = certBin;
+			Found = true;
 		}
 
 		public bool Found { get; private set; }
