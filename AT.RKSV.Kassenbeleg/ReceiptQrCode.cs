@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using NeoSmart.Utils;
 
 namespace AT.RKSV.Kassenbeleg
 {
@@ -57,12 +60,52 @@ namespace AT.RKSV.Kassenbeleg
 		public string CertificateSerial => GetElement(IdxCertificateSerial);
 		public string SignatureValue => GetElement(IdxSignatureValue);
 
-		public string GetDataForHashing()
+		public byte[] GetJwsHash()
 		{
 			if (!_isValidQrCode) return null;
 
-			// qrcode: last index of '_', take left, SHA256 => original hash
-			return _qrCode.Substring(0, _qrCode.LastIndexOf('_'));
+			// last index of '_', take left, add jws header with dot, SHA256 => original hash
+			string data = _qrCode.Substring(0, _qrCode.LastIndexOf('_'));
+			string dataUrlEncoded = UrlBase64.Encode(System.Text.Encoding.UTF8.GetBytes(data));
+			string dataForHashing = $"{DefaultJwsHeader}.{dataUrlEncoded}"; // header.data format, both header and data Base64 URL encoded
+
+			byte[] dataForHashingAsBytes = System.Text.Encoding.UTF8.GetBytes(dataForHashing);
+
+			using (var algorithm = SHA256.Create())
+			{
+				return algorithm.ComputeHash(dataForHashingAsBytes);
+			}
+		}
+
+		private const string DefaultJwsHeader = "eyJhbGciOiJFUzI1NiJ9"; // Seite 42 der Spezifikation - Header Base64 URL encoded für R1
+
+		// Allgemein: https://openid.net/specs/draft-jones-json-web-signature-04.html#DefiningECDSA
+		//
+		// Spezifikation 3.1 Erstellung der JWS-Signatur (Sicherheitseinrichtung funktionsfähig)
+		//    "Wird die Signatur manuell erstellt (ohne Verwendung einer JWS-Bibliothek) muss darauf geachtet werden, dass der Signaturwert korrekt 
+		//    formatiert ist. So verwendet z.B. Java ASN.1 für die Kodierung und die DER Darstellung für die Repräsentation des Signaturwerts. Der 
+		//    JWS-Standard3 verlangt aber die einfache Konkatenierung der beiden Teilelemente des Signaturwertes R und S: R|S. Im Muster-Code ist 
+		//    dies in den unten angegebenen Beispielen ersichtlich."
+		public bool ValidateSignature(byte[] certificateBytes)
+		{
+			var cert = new X509Certificate2(certificateBytes);
+
+			// https://stackoverflow.com/a/38235996/141927
+			using (ECDsa ecdsa = cert.GetECDsaPublicKey())
+			{
+				if (ecdsa != null)
+				{
+					byte[] signature = Convert.FromBase64String(SignatureValue);
+					if (64 != signature.Length)
+					{
+						return false;
+					}
+
+					return ecdsa.VerifyHash(GetJwsHash(), signature);
+				}
+			}
+
+			return false;
 		}
 	}
 }
