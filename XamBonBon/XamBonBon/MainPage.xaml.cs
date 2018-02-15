@@ -40,7 +40,7 @@ namespace XamBonBon
 						var certificateLookupResult = CertificateLookup.ATrust(qrCode.CertificateSerialAsDecimal);
 						if (certificateLookupResult.Found)
 						{
-							bool verified = qrCode.ValidateSignature(certificateLookupResult.CertificateBinary);
+							bool verified = qrCode.ValidateSignatureBouncyCastle(certificateLookupResult.CertificateBinary);
 							stb.AppendLine($"Ergebnis Validierung Signatur: {verified}");
 						}
 						else
