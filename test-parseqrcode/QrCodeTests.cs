@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using AT.RKSV.Kassenbeleg;
-using NeoSmart.Utils;
 using Xunit;
 
 namespace test_parseqrcode
@@ -42,6 +37,17 @@ namespace test_parseqrcode
 			bool verified = test.ValidateSignature(certBits);
 
 			Assert.True(verified);
+		}
+
+		[Fact]
+		public void VerifySignatureBouncyCastleTest()
+		{
+			byte[] certBits = Convert.FromBase64String(CERT64ENCODED);
+
+			var test = new ReceiptQrCode(QRCODE1);
+			bool ok = test.ValidateSignatureBouncyCastle(certBits);
+
+			Assert.True(ok);
 		}
 	}
 }

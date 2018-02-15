@@ -68,7 +68,7 @@ namespace AT.RKSV.Kassenbeleg
 		public int CertificateSerialAsDecimal => Convert.ToInt32(CertificateSerial, 16);
 		public string SignatureValue => GetElement(IdxSignatureValue);
 
-		public byte[] GetJwsHash()
+		public byte[] GetJws()
 		{
 			if (!_isValidQrCode) return null;
 
@@ -77,11 +77,16 @@ namespace AT.RKSV.Kassenbeleg
 			string dataUrlEncoded = UrlBase64.Encode(System.Text.Encoding.UTF8.GetBytes(data));
 			string dataForHashing = $"{DefaultJwsHeader}.{dataUrlEncoded}"; // header.data format, both header and data Base64 URL encoded
 
-			byte[] dataForHashingAsBytes = System.Text.Encoding.UTF8.GetBytes(dataForHashing);
+			return System.Text.Encoding.UTF8.GetBytes(dataForHashing);
+		}
+
+		public byte[] GetJwsHash()
+		{
+			if (!_isValidQrCode) return null;
 
 			using (var algorithm = SHA256.Create())
 			{
-				return algorithm.ComputeHash(dataForHashingAsBytes);
+				return algorithm.ComputeHash(GetJws());
 			}
 		}
 
@@ -116,6 +121,14 @@ namespace AT.RKSV.Kassenbeleg
 			}
 
 			return false;
+		}
+
+		public bool ValidateSignatureBouncyCastle(byte[] certificateBytes)
+		{
+			byte[] data = GetJws();
+			byte[] signature = Convert.FromBase64String(SignatureValue);
+
+			return BouncyCastleCrypto.VerifySignature(certificateBytes, signature, data);
 		}
 	}
 }
