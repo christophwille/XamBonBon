@@ -3,6 +3,10 @@
 Die Idee mit QR und RKSV "herumzuspielen" entstand durch den Talk [BCHGraz - Meetup #16 - Blockchain Real Life Usecases - Dr. Peter Teufl](https://www.slideshare.net/blockchainhubgraz/bchgraz-meetup-16-blockchain-real-life-usecases-peter-teufl), die
 Aufzeichnung des Talks findet sich auf [Youtube](https://www.youtube.com/watch?v=enjVlnyjJzU)
 
+Der Proof of Concept funktioniert zu diesem Zeitpunkt mit A-Trust Zertifikaten, siehe Screenshot. 
+
+ ![Screenshot](Screenshot.png)
+
 RKSV Links
 -------
 
