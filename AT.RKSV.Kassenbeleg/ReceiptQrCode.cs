@@ -57,6 +57,13 @@ namespace AT.RKSV.Kassenbeleg
 		public string CashRegisterId => GetElement(IdxCashRegisterId);
 		public string ReceiptId => GetElement(IdxReceiptId);
 		public string Date => GetElement(IdxDate);
+
+		public string BetragSatzNormal => GetElement(IdxBetragSatzNormal);
+		public string BetragSatzErmaessigt1 => GetElement(IdxBetragSatzErmaessigt1);
+		public string BetragSatzErmaessigt2 => GetElement(IdxBetragSatzErmaessigt2);
+		public string BetragSatzNull => GetElement(IdxBetragSatzNull);
+		public string BetragSatzBesonders => GetElement(IdxBetragSatzBesonders);
+
 		public string CertificateSerial => GetElement(IdxCertificateSerial);
 		public string SignatureValue => GetElement(IdxSignatureValue);
 
@@ -100,6 +107,8 @@ namespace AT.RKSV.Kassenbeleg
 					{
 						return false;
 					}
+
+					// Add: Check ob Cert zum Datum der Belegerstellung gültig war
 
 					return ecdsa.VerifyHash(GetJwsHash(), signature);
 				}
