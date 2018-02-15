@@ -56,5 +56,13 @@ namespace AT.RKSV.Kassenbeleg
 		public string Date => GetElement(IdxDate);
 		public string CertificateSerial => GetElement(IdxCertificateSerial);
 		public string SignatureValue => GetElement(IdxSignatureValue);
+
+		public string GetDataForHashing()
+		{
+			if (!_isValidQrCode) return null;
+
+			// qrcode: last index of '_', take left, SHA256 => original hash
+			return _qrCode.Substring(0, _qrCode.LastIndexOf('_'));
+		}
 	}
 }

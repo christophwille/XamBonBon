@@ -38,8 +38,35 @@ namespace test_parseqrcode
 		{
 			byte[] certBits = Convert.FromBase64String(CERT64ENCODED);
 			var cert = new X509Certificate2(certBits);
-			
-			// CngKey.Import(,Cng)
+
+			// https://stackoverflow.com/a/38235996/141927
+			using (ECDsa ecdsa = cert.GetECDsaPublicKey())
+			{
+				if (ecdsa != null)
+				{
+					var test = new ReceiptQrCode(QRCODE1);
+
+					byte[] hash = null;
+					using (var algorithm = SHA256.Create())
+					{
+						string dataAsString = test.GetDataForHashing();
+						byte[] data = System.Text.Encoding.UTF8.GetBytes(dataAsString);
+						hash = algorithm.ComputeHash(data);
+					}
+
+					byte[] signature = Convert.FromBase64String(test.SignatureValue); // MUST be 64 byte array
+					
+					bool verified = ecdsa.VerifyHash(hash, signature);
+				}
+			}
+			// 3.1 Erstellung der JWS-Signatur (Sicherheitseinrichtung funktionsfähig)
+			/* Anmerkungen: Signaturwert:
+			 Wird die Signatur manuell erstellt (ohne Verwendung einer JWS-Bibliothek) muss darauf geachtet werden, dass der Signaturwert korrekt 
+			 formatiert ist. So verwendet z.B. Java ASN.1 für die Kodierung und die DER Darstellung für die Repräsentation des Signaturwerts. Der 
+			 JWS-Standard3 verlangt aber die einfache Konkatenierung der beiden Teilelemente des Signaturwertes R und S: R|S. Im Muster-Code ist 
+			 dies in den unten angegebenen Beispielen ersichtlich. */
+
+			// https://openid.net/specs/draft-jones-json-web-signature-04.html#DefiningECDSA
 		}
 	}
 }
