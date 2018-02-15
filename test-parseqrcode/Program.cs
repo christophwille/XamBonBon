@@ -12,10 +12,6 @@ using Novell.Directory.Ldap;
 //	{
 //		static void Main(string[] args)
 //		{
-//			// TODO: verify signature (ECDSA JWS)
-
-//			// byte[] signature = Convert.FromBase64String(test.SignatureValue);
-//			// qrcode: last index of '_', take left, SHA256 => original hash
 //		}
 //	}
 //}
