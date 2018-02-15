@@ -65,6 +65,7 @@ namespace AT.RKSV.Kassenbeleg
 		public string BetragSatzBesonders => GetElement(IdxBetragSatzBesonders);
 
 		public string CertificateSerial => GetElement(IdxCertificateSerial);
+		public int CertificateSerialAsDecimal => Convert.ToInt32(CertificateSerial, 16);
 		public string SignatureValue => GetElement(IdxSignatureValue);
 
 		public byte[] GetJwsHash()
@@ -89,9 +90,9 @@ namespace AT.RKSV.Kassenbeleg
 		// Allgemein: https://openid.net/specs/draft-jones-json-web-signature-04.html#DefiningECDSA
 		//
 		// Spezifikation 3.1 Erstellung der JWS-Signatur (Sicherheitseinrichtung funktionsfähig)
-		//    "Wird die Signatur manuell erstellt (ohne Verwendung einer JWS-Bibliothek) muss darauf geachtet werden, dass der Signaturwert korrekt 
-		//    formatiert ist. So verwendet z.B. Java ASN.1 für die Kodierung und die DER Darstellung für die Repräsentation des Signaturwerts. Der 
-		//    JWS-Standard3 verlangt aber die einfache Konkatenierung der beiden Teilelemente des Signaturwertes R und S: R|S. Im Muster-Code ist 
+		//    "Wird die Signatur manuell erstellt (ohne Verwendung einer JWS-Bibliothek) muss darauf geachtet werden, dass der Signaturwert korrekt
+		//    formatiert ist. So verwendet z.B. Java ASN.1 für die Kodierung und die DER Darstellung für die Repräsentation des Signaturwerts. Der
+		//    JWS-Standard3 verlangt aber die einfache Konkatenierung der beiden Teilelemente des Signaturwertes R und S: R|S. Im Muster-Code ist
 		//    dies in den unten angegebenen Beispielen ersichtlich."
 		public bool ValidateSignature(byte[] certificateBytes)
 		{

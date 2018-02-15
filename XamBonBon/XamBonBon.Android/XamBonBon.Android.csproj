@@ -96,6 +96,10 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AT.RKSV.Kassenbeleg\AT.RKSV.Kassenbeleg.csproj">
+      <Project>{b35d7df1-7561-4a7f-9bf9-95b8e47abd66}</Project>
+      <Name>AT.RKSV.Kassenbeleg</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XamBonBon\XamBonBon.csproj">
       <Project>{BC8BA048-7641-4544-8B34-59DFCE534FEE}</Project>
       <Name>XamBonBon</Name>

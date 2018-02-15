@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamBonBon.Android", "XamBon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamBonBon", "XamBonBon\XamBonBon\XamBonBon.csproj", "{C6710541-C217-4657-A699-552B5F44FF9D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AT.RKSV.Kassenbeleg", "AT.RKSV.Kassenbeleg\AT.RKSV.Kassenbeleg.csproj", "{B35D7DF1-7561-4A7F-9BF9-95B8E47ABD66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{C6710541-C217-4657-A699-552B5F44FF9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6710541-C217-4657-A699-552B5F44FF9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6710541-C217-4657-A699-552B5F44FF9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B35D7DF1-7561-4A7F-9BF9-95B8E47ABD66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B35D7DF1-7561-4A7F-9BF9-95B8E47ABD66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B35D7DF1-7561-4A7F-9BF9-95B8E47ABD66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B35D7DF1-7561-4A7F-9BF9-95B8E47ABD66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
