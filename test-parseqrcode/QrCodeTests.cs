@@ -49,5 +49,22 @@ namespace test_parseqrcode
 
 			Assert.True(ok);
 		}
+
+		[Fact]
+		public void JwsHashTest()
+		{
+			var test = new ReceiptQrCode(QRCODE1);
+			byte[] hash = test.GetJwsHash();
+			string convertedHash = Convert.ToBase64String(hash);
+
+			Assert.Equal("RQvAE3zXoCVonYn8D5KIOZbcTxM+O0lOtOXBTqWarqM=", convertedHash);
+		}
+
+		[Fact]
+		public void SignatureValueExtractionTest()
+		{
+			var test = new ReceiptQrCode(QRCODE1);
+			Assert.Equal("irdxIo1TAowB1OzpU+dgeAS887k8AuT09jrcMjZx95xHzbKp5pLQcupkbpZK5UxtDaxj08+8bRO30Y4wxiwonw==", test.SignatureValue);
+		}
 	}
 }
