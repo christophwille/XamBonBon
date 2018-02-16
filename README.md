@@ -6,6 +6,15 @@ Aufzeichnung des Talks findet sich auf [Youtube](https://www.youtube.com/watch?v
 Der Proof of Concept funktioniert zu diesem Zeitpunkt mit A-Trust Zertifikaten, siehe Screenshot. 
 
  ![Screenshot](Screenshot.png)
+ 
+Projektstruktur (alle Solutions inkludieren _AT.RKSV.Kassenbeleg.csproj_):
+
+ * __test-parseqrcode-netcore.sln__ .NET Core Unit Tests, somit xplat test- und verwendbar (minimal, wurde verwendet um das API zu erstellen). 
+ * __XamBonBon.sln__ Simples PoC UI in Xamarin Forms (.NET Standard 2.0 Projektformat). Bouncy Castle wird verwendet um die Signatur zu validieren, weil GetECDsaPublicKey()
+		eine NotImplementedException wirft (nicht weiter nachgeprüft). Dadurch ist auch DER Konvertierung inkludiert, weil Bouncy Castle andere Signaturen schreibt/liest als JWS selbst.
+		Details zu den Möglichkeiten des QR Code Scannen weiter unten in einer eigenen Sektion.
+ * __AzFuncLdapFacade.sln__ Eine LDAP Abfrage pro Bon (am Phone)? Das skaliert nicht gegen die LDAP Server der VDAs. Deswegen dieser kleine PoC wie man einen datensparsamen
+		API Service bauen könnte der die Zertifikatsabfragen cachen kann.
 
 RKSV Links
 -------
