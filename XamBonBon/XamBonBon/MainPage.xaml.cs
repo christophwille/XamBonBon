@@ -37,7 +37,17 @@ namespace XamBonBon
 						stb.AppendLine($"Datum: {qrCode.Date}");
 						stb.AppendLine($"Beträge: {qrCode.BetragSatzNormal} / {qrCode.BetragSatzErmaessigt1} / {qrCode.BetragSatzErmaessigt2} / {qrCode.BetragSatzNull} / {qrCode.BetragSatzBesonders}");
 
-						var certificateLookupResult = CertificateLookup.ATrust(qrCode.CertificateSerialAsDecimal);
+						CertificateLookupResult certificateLookupResult = new CertificateLookupResult("cipher suite not implemented");
+						switch (qrCode.CipherSuite)
+						{
+							case "R1-AT1":
+								certificateLookupResult = CertificateLookup.ATrust(qrCode.CertificateSerialAsDecimal);
+								break;
+							case "R1-AT3":
+								certificateLookupResult = CertificateLookup.Primesign(qrCode.CertificateSerialAsDecimal);
+								break;
+						}
+
 						if (certificateLookupResult.Found)
 						{
 							bool verified = qrCode.ValidateSignatureBouncyCastle(certificateLookupResult.CertificateBinary);

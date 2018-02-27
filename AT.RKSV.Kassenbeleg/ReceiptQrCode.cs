@@ -65,7 +65,7 @@ namespace AT.RKSV.Kassenbeleg
 		public string BetragSatzBesonders => GetElement(IdxBetragSatzBesonders);
 
 		public string CertificateSerial => GetElement(IdxCertificateSerial);
-		public int CertificateSerialAsDecimal => Convert.ToInt32(CertificateSerial, 16);
+		public long CertificateSerialAsDecimal => Convert.ToInt64(CertificateSerial, 16);
 		public string SignatureValue => GetElement(IdxSignatureValue);
 
 		public byte[] GetJws()

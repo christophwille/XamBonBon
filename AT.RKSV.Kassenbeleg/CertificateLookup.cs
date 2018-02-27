@@ -6,19 +6,58 @@ using Novell.Directory.Ldap;
 
 namespace AT.RKSV.Kassenbeleg
 {
+	public enum Vda
+	{
+		ATrust,
+		Globaltrust,
+		Primesign
+	}
+
+	public class LdapConfig
+	{
+		public LdapConfig(string server, int port, string searchDN, string filterFormat)
+		{
+			Server = server;
+			Port = port;
+			SearchDN = searchDN;
+			FilterFormat = filterFormat;
+		}
+
+		public string Server { get; set; }
+		public int Port { get; set; }
+		public string SearchDN { get; set; }
+		public string FilterFormat { get; set; }
+	}
+
 	public static class CertificateLookup
 	{
-		public static CertificateLookupResult ATrust(int certificateSerialDecimal)
+		public static Dictionary<Vda,LdapConfig> LdapConfigs = new Dictionary<Vda, LdapConfig>()
+		{
+			{ Vda.ATrust, new LdapConfig("ldap.a-trust.at", 389, "C=AT", "(eidCertificateSerialNumber={0})") },
+			{ Vda.Primesign, new LdapConfig("ldap.tc.prime-sign.com", 389, "cn=PrimeSign RKSV Signing CA,o=PrimeSign GmbH,dc=tc,dc=prime-sign,dc=com", "(uniqueIdentifier={0})") },
+		};
+
+		public static CertificateLookupResult ATrust(long certificateSerialDecimal)
+		{
+			return Lookup(certificateSerialDecimal, LdapConfigs[Vda.ATrust]);
+		}
+
+		public static CertificateLookupResult Primesign(long certificateSerialDecimal)
+		{
+			return Lookup(certificateSerialDecimal, LdapConfigs[Vda.Primesign]);
+		}
+
+		public static CertificateLookupResult Lookup(long certificateSerialDecimal, LdapConfig config)
 		{
 			try
 			{
 				using (var conn = new LdapConnection())
 				{
-					conn.Connect("ldap.a-trust.at", 389);
+					conn.Connect(config.Server, config.Port);
 					conn.Bind(null, null);
 
-					var searchBase = "C=AT";
-					var filter = $"(eidCertificateSerialNumber={certificateSerialDecimal})";
+					var searchBase = config.SearchDN;
+					var filter = String.Format(config.FilterFormat, certificateSerialDecimal);
 					var search = conn.Search(searchBase, LdapConnection.SCOPE_SUB, filter, null, false);
 
 					// We only look at the first result
