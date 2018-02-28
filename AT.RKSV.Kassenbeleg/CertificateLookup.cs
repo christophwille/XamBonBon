@@ -37,6 +37,22 @@ namespace AT.RKSV.Kassenbeleg
 			{ Vda.Primesign, new LdapConfig("ldap.tc.prime-sign.com", 389, "cn=PrimeSign RKSV Signing CA,o=PrimeSign GmbH,dc=tc,dc=prime-sign,dc=com", "(uniqueIdentifier={0})") },
 		};
 
+		public static CertificateLookupResult Lookup(ReceiptQrCode qrCode)
+		{
+			CertificateLookupResult certificateLookupResult = new CertificateLookupResult("cipher suite not implemented");
+			switch (qrCode.CipherSuite)
+			{
+				case "R1-AT1":
+					certificateLookupResult = CertificateLookup.ATrust(qrCode.CertificateSerialAsDecimal);
+					break;
+				case "R1-AT3":
+					certificateLookupResult = CertificateLookup.Primesign(qrCode.CertificateSerialAsDecimal);
+					break;
+			}
+
+			return certificateLookupResult;
+		}
+
 		public static CertificateLookupResult ATrust(long certificateSerialDecimal)
 		{
 			return Lookup(certificateSerialDecimal, LdapConfigs[Vda.ATrust]);
@@ -47,7 +63,7 @@ namespace AT.RKSV.Kassenbeleg
 			return Lookup(certificateSerialDecimal, LdapConfigs[Vda.Primesign]);
 		}
 
-		public static CertificateLookupResult Lookup(long certificateSerialDecimal, LdapConfig config)
+		private static CertificateLookupResult Lookup(long certificateSerialDecimal, LdapConfig config)
 		{
 			try
 			{
