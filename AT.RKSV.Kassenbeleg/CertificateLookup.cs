@@ -13,22 +13,6 @@ namespace AT.RKSV.Kassenbeleg
 		Primesign = 3
 	}
 
-	public class LdapConfig
-	{
-		public LdapConfig(string server, int port, string searchDN, string filterFormat)
-		{
-			Server = server;
-			Port = port;
-			SearchDN = searchDN;
-			FilterFormat = filterFormat;
-		}
-
-		public string Server { get; set; }
-		public int Port { get; set; }
-		public string SearchDN { get; set; }
-		public string FilterFormat { get; set; }
-	}
-
 	public static class CertificateLookup
 	{
 		public static Dictionary<Vda,LdapConfig> LdapConfigs = new Dictionary<Vda, LdapConfig>()
@@ -41,18 +25,32 @@ namespace AT.RKSV.Kassenbeleg
 			{ Vda.Primesign, new LdapConfig("ldap.tc.prime-sign.com", 389, "cn=PrimeSign RKSV Signing CA,o=PrimeSign GmbH,dc=tc,dc=prime-sign,dc=com", "(uniqueIdentifier={0})") },
 		};
 
+		private const string VdaATrustCipherSuite = "R1-AT1";
+		private const string VdaGlobalsignTrustCipherSuite = "R1-AT2";
+		private const string VdaPrimesignCipherSuite = "R1-AT3";
+
+		public static bool IsSupportedCipherSuite(string cipherSuite)
+		{
+			return (0 == String.Compare(VdaATrustCipherSuite, cipherSuite, StringComparison.InvariantCultureIgnoreCase)
+			        || 0 == String.Compare(VdaGlobalsignTrustCipherSuite, cipherSuite, StringComparison.InvariantCultureIgnoreCase)
+			        || 0 == String.Compare(VdaPrimesignCipherSuite, cipherSuite, StringComparison.InvariantCultureIgnoreCase));
+		}
+
 		public static CertificateLookupResult Lookup(ReceiptQrCode qrCode)
 		{
-			CertificateLookupResult certificateLookupResult = new CertificateLookupResult("cipher suite not implemented");
+			if (!IsSupportedCipherSuite(qrCode.CipherSuite))
+				return new CertificateLookupResult("cipher suite not implemented");
+
+			CertificateLookupResult certificateLookupResult = null;
 			switch (qrCode.CipherSuite)
 			{
-				case "R1-AT1":
+				case VdaATrustCipherSuite:
 					certificateLookupResult = CertificateLookup.ATrust(qrCode.CertificateSerialAsDecimal);
 					break;
-				case "R1-AT2":
+				case VdaGlobalsignTrustCipherSuite:
 					certificateLookupResult = CertificateLookup.Globaltrust(qrCode.CertificateSerialAsDecimal);
 					break;
-				case "R1-AT3":
+				case VdaPrimesignCipherSuite:
 					certificateLookupResult = CertificateLookup.Primesign(qrCode.CertificateSerialAsDecimal);
 					break;
 			}
@@ -111,27 +109,5 @@ namespace AT.RKSV.Kassenbeleg
 				return new CertificateLookupResult(e.Message);
 			}
 		}
-	}
-
-	public class CertificateLookupResult
-	{
-		public CertificateLookupResult(string errorMessage)
-		{
-			ErrorMessage = errorMessage;
-			Found = false;
-		}
-
-		public CertificateLookupResult(string cn, byte[] certBin)
-		{
-			CN = cn;
-			CertificateBinary = certBin;
-			Found = true;
-		}
-
-		public bool Found { get; private set; }
-		public string ErrorMessage { get; private set; }
-
-		public string CN { get; private set; }
-		public byte[] CertificateBinary { get; private set; }
 	}
 }
