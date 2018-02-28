@@ -33,20 +33,34 @@ namespace XamBonBon
 					if (qrCode.IsValid)
 					{
 						stb.AppendLine($"Cipher Suite: {qrCode.CipherSuite}");
-						stb.AppendLine($"Cert Id: {qrCode.CertificateSerialAsDecimal}");
-						stb.AppendLine($"Datum: {qrCode.Date}");
-						stb.AppendLine($"Beträge: {qrCode.BetragSatzNormal} / {qrCode.BetragSatzErmaessigt1} / {qrCode.BetragSatzErmaessigt2} / {qrCode.BetragSatzNull} / {qrCode.BetragSatzBesonders}");
-
-						var certificateLookupResult = CertificateLookup.Lookup(qrCode);
-
-						if (certificateLookupResult.Found)
+						if (!qrCode.IstGeschlossenesSystem())
 						{
-							bool verified = qrCode.ValidateSignatureBouncyCastle(certificateLookupResult.CertificateBinary);
-							stb.AppendLine($"Ergebnis Validierung Signatur: {verified}");
+							stb.AppendLine($"Cert Id: {qrCode.CertificateSerialAsDecimal}");
 						}
 						else
 						{
-							stb.AppendLine($"Fehler: Zertifikat nicht gefunden, {certificateLookupResult.ErrorMessage}");
+							stb.AppendLine("Kassentyp: geschlossenes System");
+						}
+						stb.AppendLine($"Datum: {qrCode.Date}");
+						stb.AppendLine($"Beträge: {qrCode.BetragSatzNormal} / {qrCode.BetragSatzErmaessigt1} / {qrCode.BetragSatzErmaessigt2} / {qrCode.BetragSatzNull} / {qrCode.BetragSatzBesonders}");
+
+						if (!qrCode.IstGeschlossenesSystem())
+						{
+							var certificateLookupResult = CertificateLookup.Lookup(qrCode);
+
+							if (certificateLookupResult.Found)
+							{
+								bool verified = qrCode.ValidateSignatureBouncyCastle(certificateLookupResult.CertificateBinary);
+								stb.AppendLine($"Ergebnis Validierung Signatur: {verified}");
+							}
+							else
+							{
+								stb.AppendLine($"Fehler: Zertifikat nicht gefunden, {certificateLookupResult.ErrorMessage}");
+							}
+						}
+						else
+						{
+							stb.AppendLine($"Ordnungsbegriff des Unternehmers: {qrCode.CertificateSerial}");
 						}
 					}
 					else

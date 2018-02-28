@@ -25,15 +25,11 @@ namespace AT.RKSV.Kassenbeleg
 			{ Vda.Primesign, new LdapConfig("ldap.tc.prime-sign.com", 389, "cn=PrimeSign RKSV Signing CA,o=PrimeSign GmbH,dc=tc,dc=prime-sign,dc=com", "(uniqueIdentifier={0})") },
 		};
 
-		private const string VdaATrustCipherSuite = "R1-AT1";
-		private const string VdaGlobalsignTrustCipherSuite = "R1-AT2";
-		private const string VdaPrimesignCipherSuite = "R1-AT3";
-
 		public static bool IsSupportedCipherSuite(string cipherSuite)
 		{
-			return (0 == String.Compare(VdaATrustCipherSuite, cipherSuite, StringComparison.InvariantCultureIgnoreCase)
-			        || 0 == String.Compare(VdaGlobalsignTrustCipherSuite, cipherSuite, StringComparison.InvariantCultureIgnoreCase)
-			        || 0 == String.Compare(VdaPrimesignCipherSuite, cipherSuite, StringComparison.InvariantCultureIgnoreCase));
+			return (0 == String.Compare(AlgorithmusKennzeichen.VdaATrust, cipherSuite, StringComparison.InvariantCultureIgnoreCase)
+			        || 0 == String.Compare(AlgorithmusKennzeichen.VdaGlobaltrust, cipherSuite, StringComparison.InvariantCultureIgnoreCase)
+			        || 0 == String.Compare(AlgorithmusKennzeichen.VdaPrimesign, cipherSuite, StringComparison.InvariantCultureIgnoreCase));
 		}
 
 		public static CertificateLookupResult Lookup(ReceiptQrCode qrCode)
@@ -44,13 +40,13 @@ namespace AT.RKSV.Kassenbeleg
 			CertificateLookupResult certificateLookupResult = null;
 			switch (qrCode.CipherSuite)
 			{
-				case VdaATrustCipherSuite:
+				case AlgorithmusKennzeichen.VdaATrust:
 					certificateLookupResult = CertificateLookup.ATrust(qrCode.CertificateSerialAsDecimal);
 					break;
-				case VdaGlobalsignTrustCipherSuite:
+				case AlgorithmusKennzeichen.VdaGlobaltrust:
 					certificateLookupResult = CertificateLookup.Globaltrust(qrCode.CertificateSerialAsDecimal);
 					break;
-				case VdaPrimesignCipherSuite:
+				case AlgorithmusKennzeichen.VdaPrimesign:
 					certificateLookupResult = CertificateLookup.Primesign(qrCode.CertificateSerialAsDecimal);
 					break;
 			}

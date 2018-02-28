@@ -68,6 +68,11 @@ namespace AT.RKSV.Kassenbeleg
 		public long CertificateSerialAsDecimal => Convert.ToInt64(CertificateSerial, 16);
 		public string SignatureValue => GetElement(IdxSignatureValue);
 
+		public bool IstGeschlossenesSystem()
+		{
+			return (0 == String.Compare(AlgorithmusKennzeichen.VdaGeschlossenesSystem, CipherSuite, StringComparison.InvariantCultureIgnoreCase));
+		}
+
 		public byte[] GetJws()
 		{
 			if (!_isValidQrCode) return null;
