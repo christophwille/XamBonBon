@@ -8,9 +8,9 @@ namespace AT.RKSV.Kassenbeleg
 {
 	public enum Vda
 	{
-		ATrust,
-		Globaltrust,
-		Primesign
+		ATrust = 1,
+		Globaltrust = 2,
+		Primesign = 3
 	}
 
 	public class LdapConfig
@@ -33,7 +33,11 @@ namespace AT.RKSV.Kassenbeleg
 	{
 		public static Dictionary<Vda,LdapConfig> LdapConfigs = new Dictionary<Vda, LdapConfig>()
 		{
+			// http://www.a-trust.at/Company-Profile/ scroll to bottom
 			{ Vda.ATrust, new LdapConfig("ldap.a-trust.at", 389, "C=AT", "(eidCertificateSerialNumber={0})") },
+			// http://www.globaltrust.eu/php/cms_monitor.php?q=PUB&s=81391ttp
+			{ Vda.Globaltrust, new LdapConfig("ldap.globaltrust.eu)", 389, "C=AT", "(serialNumber={0})") },
+			// https://tc.prime-sign.com/policies/PrimeSign_RKSV_CPS_v1.0.0.pdf Sektion 2.1.1 (p17)
 			{ Vda.Primesign, new LdapConfig("ldap.tc.prime-sign.com", 389, "cn=PrimeSign RKSV Signing CA,o=PrimeSign GmbH,dc=tc,dc=prime-sign,dc=com", "(uniqueIdentifier={0})") },
 		};
 
@@ -44,6 +48,9 @@ namespace AT.RKSV.Kassenbeleg
 			{
 				case "R1-AT1":
 					certificateLookupResult = CertificateLookup.ATrust(qrCode.CertificateSerialAsDecimal);
+					break;
+				case "R1-AT2":
+					certificateLookupResult = CertificateLookup.Globaltrust(qrCode.CertificateSerialAsDecimal);
 					break;
 				case "R1-AT3":
 					certificateLookupResult = CertificateLookup.Primesign(qrCode.CertificateSerialAsDecimal);
@@ -56,6 +63,11 @@ namespace AT.RKSV.Kassenbeleg
 		public static CertificateLookupResult ATrust(long certificateSerialDecimal)
 		{
 			return Lookup(certificateSerialDecimal, LdapConfigs[Vda.ATrust]);
+		}
+
+		public static CertificateLookupResult Globaltrust(long certificateSerialDecimal)
+		{
+			return Lookup(certificateSerialDecimal, LdapConfigs[Vda.Globaltrust]);
 		}
 
 		public static CertificateLookupResult Primesign(long certificateSerialDecimal)
